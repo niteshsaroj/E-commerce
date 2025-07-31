@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-6">
+  <!-- Filter Dropdown -->
+  <form method="GET" class="mb-6 flex flex-wrap items-center gap-3">
+    <select name="category" class="p-2 border border-gray-300 rounded w-full sm:w-auto">
+      <option value="">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == selected_category %}selected{% endif %}>
+          {{ cat.name }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+      Filter
+    </button>
+  </form>
+
+  <!-- Product Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% for product in products %}
+    <div class="bg-white rounded-lg shadow hover:shadow-md transition-all duration-300 overflow-hidden">
+      <a href="{% url 'product_detail' product.id %}">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-80 object-cover">
+        {% else %}
+        <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">No Image</div>
+        {% endif %}
+      </a>
+      <div class="p-4">
+        <h2 class="text-lg font-semibold text-gray-800 truncate">{{ product.name }}</h2>
+        <p class="text-gray-700 text-sm mb-2">₹{{ product.price }}</p>
+
+        {% if product.stock > 0 %}
+        <div class="flex justify-between items-center">
+          <a href="{% url 'toggle_wishlist' product.id %}" class="text-pink-600 text-sm hover:underline">
+            ❤️ Wishlist
+          </a>
+          <span class="text-green-600 text-xs">In Stock</span>
+        </div>
+        {% else %}
+        <p class="text-red-500 text-sm font-semibold mt-2">Out of Stock</p>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-600 text-center col-span-full">No products found for this category.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

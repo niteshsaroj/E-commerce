@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white p-6 rounded shadow max-w-3xl mx-auto mt-8">
+  <h2 class="text-3xl font-bold mb-4">👤 My Account</h2>
+
+  <!-- User Info -->
+  <div class="mb-6 border-b pb-4">
+    <p class="text-lg text-gray-700">Welcome, <strong class="text-blue-700">{{ user.username }}</strong></p>
+    <p class="text-gray-600 text-sm">📧 {{ user.email }}</p>
+    <a href="{% url 'logout' %}" class="inline-block mt-3 bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded">
+      🚪 Logout
+    </a>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 gap-4 mb-6">
+  <div class="bg-gray-100 p-4 rounded text-center">
+    <p class="text-2xl font-bold text-blue-700">{{ orders|length }}</p>
+    <p class="text-sm text-gray-700">Total Orders</p>
+  </div>
+  <div class="bg-gray-100 p-4 rounded text-center">
+    <p class="text-2xl font-bold text-red-600">{{ cancelled_count }}</p>
+    <p class="text-sm text-gray-700">Cancelled Orders</p>
+  </div>
+</div>
+
+  <!-- Orders List -->
+  <h3 class="text-xl font-semibold mb-3">🧾 Recent Orders</h3>
+  {% if orders %}
+    <ul class="space-y-4">
+      {% for order in orders %}
+        <li class="border p-4 rounded bg-gray-50 hover:shadow transition">
+          <div class="flex justify-between items-center mb-2">
+            <p class="font-semibold text-gray-800">Order #{{ order.id }}</p>
+            <span class="text-sm text-gray-600">{{ order.created_at|date:"d M Y" }}</span>
+          </div>
+          <p class="text-gray-600">💰 ₹{{ order.total_price }}</p>
+          <p class="text-gray-600">🚚 
+            <span class="{% if order.status == 'Delivered' %}text-green-600{% elif order.status == 'Cancelled' %}text-red-500{% else %}text-yellow-600{% endif %}">
+              {{ order.status }}
+            </span>
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-600">You have no orders yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

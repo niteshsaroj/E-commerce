@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-5xl mx-auto p-6 bg-white shadow rounded">
+  <h2 class="text-2xl font-bold mb-4">🧾 Order Details - #{{ order.id }}</h2>
+
+  <div class="mb-4">
+    <p><strong>Status:</strong>
+      <span class="px-2 py-1 rounded text-sm font-medium
+        {% if order.status == 'Delivered' %} bg-green-100 text-green-800
+        {% elif order.status == 'Pending' %} bg-yellow-100 text-yellow-800
+        {% elif order.status == 'Cancelled' %} bg-red-100 text-red-700
+        {% else %} bg-gray-100 text-gray-700 {% endif %}">
+        {{ order.status }}
+      </span>
+    </p>
+  </div>
+
+  <!-- Ordered Items Table -->
+  <div class="overflow-x-auto mb-6">
+    <table class="w-full text-sm border">
+      <thead class="bg-gray-50">
+        <tr class="text-left border-b">
+          <th class="py-2 px-4">Image</th>
+          <th class="py-2 px-4">Product</th>
+          <th class="py-2 px-4">Qty</th>
+          <th class="py-2 px-4">Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items.all %}
+        <tr class="border-b hover:bg-gray-50">
+          <td class="p-2">
+            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-16 h-16 rounded" />
+          </td>
+          <td class="p-2">{{ item.product.name }}</td>
+          <td class="p-2">{{ item.quantity }}</td>
+          <td class="p-2">₹{{ item.price }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Delivery Address Section -->
+  <div class="bg-gray-50 p-4 rounded shadow mb-6">
+    <h3 class="text-lg font-semibold mb-2">📍 Delivery Address</h3>
+    <p><strong>{{ order.full_name }}</strong></p>
+    <p>{{ order.address }}</p>
+    <p>📞 {{ order.phone }}</p>
+
+    {% if order.status != "Delivered" and order.status != "Cancelled" %}
+    <button id="edit-btn" class="mt-3 text-blue-600 underline">Change Address</button>
+
+    <form method="post" class="mt-4 hidden" id="edit-form">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="update_address" />
+
+      <label class="block mb-1">Full Name</label>
+      <input type="text" name="full_name" value="{{ order.full_name }}" class="w-full p-2 border rounded mb-3" />
+
+      <label class="block mb-1">Address</label>
+      <textarea name="address" class="w-full p-2 border rounded mb-3">{{ order.address }}</textarea>
+
+      <label class="block mb-1">Phone</label>
+      <input type="text" name="phone" value="{{ order.phone }}" class="w-full p-2 border rounded mb-3" />
+
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Update Address</button>
+    </form>
+    {% else %}
+    <p class="text-pink-600 mt-2">❌ Address can’t be changed after order is {{ order.status }}</p>
+    {% endif %}
+  </div>
+
+  <!-- Price & Payment -->
+  <div class="text-sm mb-6">
+    <p><strong>Total Price:</strong> ₹{{ order.total_price }}</p>
+    <p>
+      <strong>Payment:</strong>
+      {% if order.payment_method == "COD" %}Cash on Delivery
+      {% else %}{{ order.payment_method }}{% endif %}
+    </p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <a href="{% url 'generate_invoice' order.id %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      📄 Download Invoice (PDF)
+    </a>
+
+    <a href="mailto:support@example.com" class="text-sm text-blue-600 underline">
+      Need help? Contact Support
+    </a>
+
+    {% if order.status == "Delivered" %}
+      <p class="text-green-600 text-sm">✅ Delivered</p>
+    {% elif order.status != "Cancelled" %}
+      <form method="post" action="{% url 'cancel_order' order.id %}" onsubmit="return confirm('Cancel this order?');">
+        {% csrf_token %}
+        <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+          Cancel Order
+        </button>
+      </form>
+    {% endif %}
+  </div>
+
+  <!-- Logs -->
+  {% if logs %}
+  <div class="mt-8 bg-gray-100 p-4 rounded">
+    <h3 class="text-lg font-semibold mb-2">📝 Change History</h3>
+    <ul class="text-sm space-y-2">
+      {% for log in logs %}
+      <li class="border-b pb-2">
+        <strong>{{ log.changed_by.username }}</strong> – {{ log.change_description }}<br />
+        <span class="text-gray-500 text-xs">{{ log.changed_at|date:"d M Y, h:i A" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  document.getElementById("edit-btn")?.addEventListener("click", function () {
+    document.getElementById("edit-form").classList.remove("hidden");
+    this.classList.add("hidden");
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - E-Shop{% endblock %}
+
+{% block content %}
+<div class="container mx-auto md:px-2">
+   
+<section class="py-16">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6">
+    <div class="mb-8 md:mb-0">
+      <h1 class="text-4xl md:text-6xl font-medium">
+        DISCOVER <span class="text-amber-700">THE LATEST</span><br>
+        <span class="text-gray-400">Fashion Trends</span>
+      </h1>
+      <p class="mt-4 text-gray-600 max-w-md">
+        Whether you're looking for casual wear, formal attire, or seasonal outfits, we have something for everyone.
+      </p>
+      <a href="{% url 'product_list' %}" class="mt-6 inline-block bg-black text-white p-3 rounded-lg tracking-widest">START SHOPPING</a>
+    </div>
+    <div>
+      <img src="{% static 'images/new watch.jpg' %}" alt="Hero Banner" class="w-full max-w-md rounded-lg shadow-lg">
+    </div>
+  </div>
+</section>
+ 
+ <!-- Trust Badges -->
+  <section class="bg-gray-50 p-6 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-10">
+    <div class="py-5">
+      <h4 class="font-semibold text-lg mb-1">✅ 100% Genuine</h4>
+      <p class="text-gray-600 text-sm">We guarantee authentic products only.</p>
+    </div>
+    <div class="py-5">
+      <h4 class="font-semibold text-lg mb-1">🚚 Free Shipping</h4>
+      <p class="text-gray-600 text-sm">On all orders above ₹499.</p>
+    </div>
+    <div class="py-5">
+      <h4 class="font-semibold text-lg mb-1">↩ Easy Returns</h4>
+      <p class="text-gray-600 text-sm">7-day hassle-free return policy.</p>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="mb-10">
+    <h2 class="text-2xl font-bold py-10">Featured Products</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {% for product in featured_products %}
+      <div class="shadow rounded overflow-hidden hover:shadow-md">
+        <a href="{% url 'product_detail' product.id %}">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-80 object-cover">
+          <div class="p-4">
+            <h3 class="text-sm font-semibold">{{ product.name }}</h3>
+            <p class="text-gray-600">₹{{ product.price }}</p>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+<div class="md:p-30">
+      <img src="{% static 'images/maxresdefault.jpg' %}" alt="Hero Banner" class="w-full rounded-lg shadow-lg">
+    </div>
+
+
+<section class="md:py-40 pt-10 bg-gray-50 w-full">
+  <div class="w-full px-4 sm:px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
+    
+    <!-- Left Big Banner -->
+    <div class="relative">
+      <img src="{% static 'images/home2.jpg' %}" class="w-full h-full max-h-[400px] object-cover rounded-lg" alt="Promo 1">
+    </div>
+
+    <!-- Right Side - 2 stacked banners -->
+    <div class="grid grid-rows-2 gap-6">
+      
+      <!-- Top Right -->
+      <div class="relative">
+        <img src="{% static 'images/home1.jpg' %}" class="w-full h-full max-h-[190px] object-cover rounded-lg" alt="Promo 2">
+      </div>
+      
+      <!-- Bottom Right -->
+      <div class="relative">
+        <img src="{% static 'images/home3.webp' %}" class="w-full h-full max-h-[190px] object-cover rounded-lg" alt="Promo 3">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+</div>
+{% endblock %}

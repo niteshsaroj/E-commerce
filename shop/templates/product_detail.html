@@ -1,0 +1,143 @@
+{% extends 'base.html' %} {% load static %} {% load humanize %}
+ {% block content %}
+
+<div class="max-w-7xl mx-auto p-6 bg-white rounded shadow mt-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Image Gallery -->
+    <div class="flex">
+      <!-- Thumbnail Images -->
+      <div class="flex flex-col space-y-2">
+        {% for img in product.images.all %}
+        <img
+          src="{{ img.image.url }}"
+          class="w-16 h-16 object-cover border rounded cursor-pointer hover:ring ring-blue-500"
+          onclick="document.getElementById('mainImage').src='{{ img.image.url }}'"
+        />
+        {% endfor %}
+      </div>
+
+      <!-- Main Image -->
+      <div class="ml-4">
+        {% if product.image %}
+        <img
+          id="mainImage"
+          src="{{ product.image.url }}"
+          alt="{{ product.name }}"
+          class="w-96 h-96 object-contain rounded border"
+        />
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div>
+      <h1 class="text-3xl font-bold mb-1">{{ product.name }}</h1>
+      <p class="text-gray-500 text-sm">(One Size)</p>
+
+      <!-- Price -->
+      <div class="flex items-center mt-2 mb-4">
+        <span class="line-through text-gray-400 mr-2"
+          >₹{{ product.price|add:"5000" }}</span
+        >
+        <span class="text-2xl font-bold text-green-700"
+          >₹{{ product.price }}</span
+        >
+      </div>
+      <p class="text-sm text-gray-600 mb-4">Inclusive of all taxes</p>
+
+      <!-- Cart + Wishlist -->
+      {% if product.stock > 0 %}
+      <div class="flex space-x-4 mb-4">
+        <a
+          href="{% url 'add_to_cart' product.id %}"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          >Add to Cart</a
+        >
+        <a
+          href="{% url 'toggle_wishlist' product.id %}"
+          class="text-pink-600 hover:underline"
+          >❤️ Wishlist</a
+        >
+      </div>
+      {% else %}
+      <p class="text-red-600 font-bold mb-4">Out of Stock</p>
+      {% endif %}
+
+      <!-- Highlights -->
+      <div class="border-t pt-4 mt-4 text-sm text-gray-600 space-y-2">
+        <p>✅ 100% Genuine Products</p>
+        <p>🔁 Easy Return Policy</p>
+      </div>
+
+      <!-- Reviews -->
+      <!-- Reviews -->
+      <div class="mt-8">
+        <h3 class="text-xl font-bold mb-2">Reviews</h3>
+        {% with avg=product.average_rating|floatformat:1 %}
+        <p class="text-yellow-600 mb-4">⭐ {{ avg }}/5 average</p>
+        {% endwith %} {% for review in reviews %}
+        <div class="bg-gray-100 p-3 rounded mb-2">
+          <div class="flex justify-between">
+            <strong>{{ review.user.username }}</strong>
+            <span class="text-sm text-gray-500"
+              >{{ review.created_at|naturaltime }}</span
+            >
+          </div>
+          <p class="text-sm">Rating: {{ review.rating }} / 5</p>
+          <p>{{ review.comment }}</p>
+        </div>
+        {% empty %}
+        <p class="text-gray-500">No reviews yet.</p>
+        {% endfor %} {% if user.is_authenticated %} {% if can_review %}
+        <h4 class="text-lg font-semibold mt-6">Write a Review</h4>
+        <form method="POST" class="mt-2 space-y-3">
+          {% csrf_token %} {{ form.as_p }}
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Submit
+          </button>
+        </form>
+        {% elif has_reviewed %}
+        <p class="text-green-600 mt-4">
+          ✅ You already submitted a review for this product.
+        </p>
+        {% else %}
+        <p class="text-red-600 mt-4">
+          ❌ You can only review this product if you've purchased and received
+          it.
+        </p>
+        {% endif %} {% else %}
+        <p class="mt-4 text-gray-600">
+          🔒
+          <a href="{% url 'login' %}" class="text-blue-500 underline">Login</a>
+          to write a review.
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Related Products -->
+  <hr class="my-8" />
+  <h2 class="text-xl font-bold mb-4">Related Products</h2>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    {% for related in related_products %}
+    <div class="bg-white border rounded p-2 justify-center  hover:shadow-md transition">
+      <a href="{% url 'product_detail' related.id %}">
+        {% if related.image %}
+        <img
+          src="{{ related.image.url }}"
+          class="object-cover rounded mb-2"
+        />
+        {% endif %}
+        <h3 class="text-sm font-semibold truncate">{{ related.name }}</h3>
+        <p class="text-gray-500">₹{{ related.price }}</p>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

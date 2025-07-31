@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>New Contact Message</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f5;
+      padding: 20px;
+      color: #333;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.06);
+    }
+    .header {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .header h2 {
+      color: #1a202c;
+    }
+    .section {
+      margin-bottom: 15px;
+    }
+    .section strong {
+      display: inline-block;
+      width: 80px;
+    }
+    .footer {
+      border-top: 1px solid #eee;
+      margin-top: 30px;
+      padding-top: 10px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h2>📬 New Message from Contact Form</h2>
+    </div>
+
+    <div class="section">
+      <strong>Name:</strong> {{ name }}
+    </div>
+    <div class="section">
+      <strong>Email:</strong> {{ email }}
+    </div>
+    <div class="section">
+      <strong>Phone:</strong> {{ phone }}
+    </div>
+
+    <div class="section">
+      <strong>Subject:</strong> {{ subject }}
+    </div>
+
+    <div class="section">
+      <strong>Message:</strong>
+      <p style="margin-top: 5px;">{{ message }}</p>
+    </div>
+
+    <div class="footer">
+      This message was sent from the contact form on your e-commerce site.
+    </div>
+  </div>
+</body>
+</html>

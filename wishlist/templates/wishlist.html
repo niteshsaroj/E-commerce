@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-6">
+  <h2 class="text-3xl font-bold mb-6">💖 My Wishlist</h2>
+
+  {% if wishlist.products.all %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for product in wishlist.products.all %}
+    <div class="bg-white shadow rounded p-4 hover:shadow-md transition">
+      <a href="{% url 'product_detail' product.id %}">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+             class="w-full h-80 object-cover rounded mb-2" />
+        {% else %}
+        <div class="w-full h-40 bg-gray-100 flex items-center justify-center text-gray-400 rounded mb-2">
+          No Image
+        </div>
+        {% endif %}
+        <h3 class="text-lg font-semibold">{{ product.name }}</h3>
+        <p class="text-green-700 font-bold mt-1">₹{{ product.price }}</p>
+      </a>
+      <div class="mt-2 text-right">
+        <a href="{% url 'toggle_wishlist' product.id %}"
+           class="text-sm text-red-500 hover:underline">❤️ Remove</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="text-center py-20">
+    <p class="text-gray-500 text-lg mb-2">Your wishlist is empty.</p>
+    <a href="{% url 'product_list' %}" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+      Browse Products
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

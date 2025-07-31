@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto p-6 bg-white shadow rounded">
+  <h2 class="text-3xl font-bold mb-8">Admin Dashboard</h2>
+
+  <!-- Summary Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    {% comment %} Dashboard Summary {% endcomment %}
+    <div class="bg-blue-100 p-6 rounded shadow text-center">
+      <p class="text-gray-600">Total Orders</p>
+      <h3 class="text-2xl font-bold">{{ total_orders }}</h3>
+    </div>
+    <div class="bg-green-100 p-6 rounded shadow text-center">
+      <p class="text-gray-600">Total Revenue</p>
+      <h3 class="text-2xl font-bold">₹{{ total_revenue }}</h3>
+    </div>
+    <div class="bg-yellow-100 p-6 rounded shadow text-center">
+      <p class="text-gray-600">Products</p>
+      <h3 class="text-2xl font-bold">{{ total_products }}</h3>
+    </div>
+    <div class="bg-red-100 p-6 rounded shadow text-center">
+      <p class="text-gray-600">Pending Orders</p>
+      <h3 class="text-2xl font-bold">{{ pending_orders }}</h3>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+    <div class="bg-white p-6 border rounded shadow">
+      <h3 class="text-lg font-semibold mb-4">📊 Monthly Sales</h3>
+      <canvas id="salesChart"></canvas>
+    </div>
+    <div class="bg-white p-6 border rounded shadow">
+      <h3 class="text-lg font-semibold mb-4">📈 Revenue by Category</h3>
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Orders Section -->
+  <h3 class="text-2xl font-semibold mb-4">Orders</h3>
+  <table class="w-full mb-6 bg-white rounded shadow text-sm">
+    <thead class="bg-gray-100 text-left">
+      <tr>
+        <th class="p-3">ID</th>
+        <th class="p-3">User</th>
+        <th class="p-3">Status</th>
+        <th class="p-3">Change Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr class="border-b">
+        <td class="p-3">#{{ order.id }}</td>
+        <td class="p-3">{{ order.user.username }}</td>
+        <td class="p-3">{{ order.status }}</td>
+        <td class="p-3">
+          <form method="POST" class="flex items-center gap-2">
+            {% csrf_token %}
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <select name="status" class="border rounded px-2 py-1">
+              <option {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+              <option {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+              <option {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+            </select>
+            <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Update</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Export Buttons -->
+  <form method="get" action="{% url 'export_orders_csv' %}" class="mb-10 flex flex-wrap items-center gap-4">
+    <input type="date" name="start" class="border p-2 rounded" required>
+    <input type="date" name="end" class="border p-2 rounded" required>
+    <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Export CSV</button>
+    <a href="{% url 'export_orders_excel' %}" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Export Excel</a>
+  </form>
+
+  <!-- Product Section -->
+  <h3 class="text-2xl font-semibold mb-4">Products</h3>
+  <table class="w-full bg-white rounded shadow text-sm mb-6">
+    <thead class="bg-gray-100 text-left">
+      <tr>
+        <th class="p-3">ID</th>
+        <th class="p-3">Name</th>
+        <th class="p-3">Stock</th>
+        <th class="p-3">Delete</th>
+        <th class="p-3">Edit</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+      <tr class="border-b">
+        <td class="p-3">#{{ product.id }}</td>
+        <td class="p-3">{{ product.name }}</td>
+        <td class="p-3">{{ product.stock }}</td>
+        <td class="p-3">
+          <form method="POST" action="{% url 'delete_product' product.id %}">
+            {% csrf_token %}
+            <button class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+          </form>
+        </td>
+        <td class="p-3">
+          <a href="{% url 'edit_product' product.id %}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Low Stock Alert -->
+  {% if low_stock_products %}
+  <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded mb-8">
+    <p class="font-bold">⚠️ Low Stock Alert</p>
+    <ul class="list-disc ml-6 mt-2 text-sm">
+      {% for product in low_stock_products %}
+        <li>{{ product.name }} — only {{ product.stock }} left</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <!-- Add Product Form -->
+  <h3 class="text-2xl font-semibold mb-4 mt-10">Add New Product</h3>
+  <form method="POST" enctype="multipart/form-data" action="{% url 'add_product' %}" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-6 rounded shadow">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Product Name" required class="border px-4 py-2 rounded">
+    <input type="number" step="0.01" name="price" placeholder="Price" required class="border px-4 py-2 rounded">
+    <input type="number" name="stock" placeholder="Stock" required class="border px-4 py-2 rounded">
+    <select name="category" required class="border px-4 py-2 rounded">
+      {% for cat in categories %}
+        <option value="{{ cat.id }}">{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+    <textarea name="description" placeholder="Description" required class="col-span-2 border px-4 py-2 rounded"></textarea>
+    <input type="file" name="image" class="col-span-2 border px-4 py-2 rounded">
+    <button type="submit" class="col-span-2 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Add Product</button>
+  </form>
+</div>
+
+<!-- Optional Chart.js Script Placeholder -->
+<script>
+  // Add chart.js logic here
+</script>
+{% endblock %}

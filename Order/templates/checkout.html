@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-xl mx-auto p-6 bg-white shadow-md rounded mt-10">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">🧾 Checkout</h2>
+
+  <form method="POST" class="space-y-4">
+    {% csrf_token %}
+    
+    <!-- Full Name -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+      <input 
+        type="text" 
+        name="full_name" 
+        required 
+        placeholder="Enter your full name"
+        class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Phone -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+      <input 
+        type="text" 
+        name="phone" 
+        required 
+        placeholder="Enter your phone number"
+        class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Address -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+      <textarea 
+        name="address" 
+        rows="4" 
+        required 
+        placeholder="Enter delivery address"
+        class="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      ></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="pt-4">
+      <button 
+        type="submit" 
+        class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold transition"
+      >
+        ✅ Place Order
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
