@@ -9,7 +9,6 @@ A full-featured e-commerce website built using **Django**, **Tailwind CSS**, and
 - ✅ User Registration and Login (JWT and Session)
 - 🛍️ Product Catalog with multiple images
 - 🛒 Add to Cart, Wishlist, and Checkout
-- 💳 Order Placement (Cash on Delivery)
 - 🧾 My Orders and Order Details with Cancel Option
 - 📦 Admin Dashboard (Sales, Profit, Inventory)
 - 📈 Analytics by Category and Top Products
@@ -77,6 +76,19 @@ npm run watch:css
 python manage.py runserver
 
 ```
+
+## 🛠️ View :
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 132717" src="https://github.com/user-attachments/assets/16a5a55b-49fa-4768-8160-d772b0f55824" />
+<img width="1390" height="794" alt="Screenshot 2025-08-01 132813" src="https://github.com/user-attachments/assets/85665af6-7bf9-4d65-b9a0-481981faef61" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 133306" src="https://github.com/user-attachments/assets/1a32650f-58d6-4a2c-ad11-e43542a614d6" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 133228" src="https://github.com/user-attachments/assets/f4a62167-7e63-4a54-bab3-a8a1ef531d61" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 133148" src="https://github.com/user-attachments/assets/c597d13f-9620-4c67-a6da-228c79bfaa1f" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 133057" src="https://github.com/user-attachments/assets/098f1680-fc7f-4cf8-9270-d3598ec135aa" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 133024" src="https://github.com/user-attachments/assets/b892fa31-f289-4b6e-9a59-73d475635962" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 133003" src="https://github.com/user-attachments/assets/27cb7868-c8cd-4c2a-b617-1ff747bf1db5" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 132929" src="https://github.com/user-attachments/assets/4273f5df-05b8-45d8-8d2a-0ecd3d0c082d" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 132909" src="https://github.com/user-attachments/assets/d02260a6-9932-4dfb-b288-009773357bdd" />
+<img width="1920" height="1080" alt="Screenshot 2025-08-01 132843" src="https://github.com/user-attachments/assets/c9ef93a4-de8f-44da-b845-079558fc6299" />
 
 🙋‍♂️ Author
 Nitesh Saroj
